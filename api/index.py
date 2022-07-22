@@ -8,6 +8,7 @@ from .lib.auth import JWTAuth
 
 
 app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements')
+app.config.from_prefixed_env()
 app.config.update(
     SECRET_KEY=os.getenv('SECRET_KEY'),
     DOCS_FAVICON='https://www.mazdausa.com/favicon.ico',
@@ -52,6 +53,10 @@ mazdaClient = MockClient if useMock else pymazda.Client
 @app.route('/')
 def index():
     return 'Index Page'
+
+@app.route('/api')
+def hello_name():
+    return 'Api Page'
 
 @app.post("/auth")
 @app.doc(summary='Get auth tocken')
