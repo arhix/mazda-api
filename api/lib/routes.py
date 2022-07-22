@@ -1,6 +1,7 @@
 
+from aiohttp import ClientResponseError
 from apiflask import abort, APIBlueprint
-from flask import redirect, url_for
+from pymazda.exceptions import *
 
 import pymazda
 import os
@@ -20,14 +21,17 @@ mazdaClient = MockClient if useMock else pymazda.Client
 @bp.doc(summary='Get auth tocken', tag="auth")
 @bp.input(MazdaAuth)
 async def getAuth(data: MazdaAuth) -> None:
-    client = mazdaClient(**data)
     try:
+        client = mazdaClient(**data)
         await client.validate_credentials()
-    except(Exception) as err:
-        abort(401, message='Authentication error',
-              extra_data={
-                  'message': err
-              })
+    except(MazdaConfigException) as err:
+        abort(401, message='Authentication error', extra_data={
+            'message': err.status
+        })
+    except(ClientResponseError) as err:
+        abort(401, message='Authentication error', extra_data={
+            'message': err.message
+        })
     finally:
         client.close()
 
