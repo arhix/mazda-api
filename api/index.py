@@ -2,9 +2,9 @@ from apiflask import APIFlask, abort
 import pymazda
 import os
 
-from .mock_client import MockClient
-from .schemas import MazdaAuth, DoorsStatus
-from .auth import JWTAuth
+from .lib.mock_client import MockClient
+from .lib.schemas import MazdaAuth, DoorsStatus
+from .lib.auth import JWTAuth
 
 
 app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements')
@@ -48,6 +48,10 @@ auth = JWTAuth(app.secret_key)
 
 useMock = app.debug and os.getenv("MOCK_CLIENT", 'False').lower() in ('true', '1', 't')
 mazdaClient = MockClient if useMock else pymazda.Client
+
+@app.route('/')
+def index():
+    return 'Index Page'
 
 @app.post("/auth")
 @app.doc(summary='Get auth tocken')
