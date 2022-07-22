@@ -2,7 +2,7 @@ from typing import Optional
 from apiflask import HTTPTokenAuth
 from jose import JWTError, jwt
 
-from .schemas import MazdaAuth
+from api.lib.schemas import MazdaAuth
 
 
 class JWTAuth(HTTPTokenAuth):

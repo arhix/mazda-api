@@ -1,7 +1,7 @@
 from apiflask import APIFlask
 import os
 
-from .lib.routes import bp
+from api.lib.routes import bp
 
 
 app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements', docs_path="/")

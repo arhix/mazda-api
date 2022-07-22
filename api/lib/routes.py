@@ -1,4 +1,3 @@
-
 from aiohttp import ClientResponseError
 from apiflask import abort, APIBlueprint
 from pymazda.exceptions import *
@@ -6,9 +5,9 @@ from pymazda.exceptions import *
 import pymazda
 import os
 
-from .mock_client import MockClient
-from .schemas import MazdaAuth, DoorsStatus
-from .auth import JWTAuth
+from api.lib.mock_client import MockClient
+from api.lib.schemas import MazdaAuth, DoorsStatus
+from api.lib.auth import JWTAuth
 
 bp = APIBlueprint('foo', __name__)
 
@@ -21,10 +20,19 @@ mazdaClient = MockClient if useMock else pymazda.Client
 @bp.doc(summary='Get auth tocken', tag="auth")
 @bp.input(MazdaAuth)
 async def getAuth(data: MazdaAuth) -> None:
+    client = None
     try:
         client = mazdaClient(**data)
         await client.validate_credentials()
-    except(MazdaConfigException) as err:
+    except(
+        MazdaException,
+        MazdaConfigException,
+        MazdaAPIEncryptionException,
+        MazdaAuthenticationException,
+        MazdaAccountLockedException,
+        MazdaTokenExpiredException,
+        MazdaLoginFailedException
+    ) as err:
         abort(401, message='Authentication error', extra_data={
             'message': err.status
         })
@@ -33,7 +41,8 @@ async def getAuth(data: MazdaAuth) -> None:
             'message': err.message
         })
     finally:
-        client.close()
+        if client is not None:
+            client.close()
 
     return auth.encode(data)
 
