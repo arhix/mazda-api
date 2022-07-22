@@ -7,3 +7,10 @@
 .env.build
 
 .vercel
+
+__pycache__/
+*.py[cod]
+*$py.class
+.venv
+
+.vscode
