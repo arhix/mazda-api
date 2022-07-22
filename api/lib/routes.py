@@ -1,5 +1,6 @@
 
 from apiflask import abort, APIBlueprint
+from flask import redirect, url_for
 
 import pymazda
 import os
@@ -15,12 +16,8 @@ auth = JWTAuth(os.getenv('SECRET_KEY'))
 useMock = os.getenv("MOCK_CLIENT", 'False').lower() in ('true', '1', 't')
 mazdaClient = MockClient if useMock else pymazda.Client
 
-@bp.route('/')
-def index():
-    return 'Index Page'
-
 @bp.post("/auth")
-@bp.doc(summary='Get auth tocken', tag="main")
+@bp.doc(summary='Get auth tocken', tag="auth")
 @bp.input(MazdaAuth)
 async def getAuth(data: MazdaAuth) -> None:
     client = mazdaClient(**data)
@@ -38,7 +35,7 @@ async def getAuth(data: MazdaAuth) -> None:
 
 
 @bp.get("/vehicles")
-@bp.doc(summary='List of vehicles', security='bearerAuth', tag="vehicle")
+@bp.doc(summary='List of vehicles', security='bearerAuth', tag="main")
 @auth.login_required
 async def getVehicles() -> None:
     client = mazdaClient(**auth.current_user)
@@ -48,7 +45,7 @@ async def getVehicles() -> None:
 
 
 @bp.get("/vehicle/status/<int:vid>")
-@bp.doc(summary='Vehicle status', security='bearerAuth', tag="vehicle")
+@bp.doc(summary='Vehicle status', security='bearerAuth', tag="main")
 @auth.login_required
 async def getStatus(vid: int) -> None:
     client = mazdaClient(**auth.current_user)

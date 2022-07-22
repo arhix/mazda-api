@@ -4,7 +4,7 @@ import os
 from .lib.routes import bp
 
 
-app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements', openapi_blueprint_url_prefix="/api")
+app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements', openapi_blueprint_url_prefix="/api", docs_path="/")
 app.config.update(
     SECRET_KEY=os.getenv('SECRET_KEY'),
     DOCS_FAVICON='https://www.mazdausa.com/favicon.ico',
