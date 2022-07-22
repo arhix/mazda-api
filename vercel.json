@@ -1,5 +1,16 @@
 {
+    "functions": {
+        "api/index.py": {
+            "includeFiles": "lib/**"
+        }
+    },
     "rewrites": [
-        { "source": "/api/(.*)", "destination": "/api/index" }
-    ]
+        {
+            "source": "/(.*)",
+            "destination": "/api/index"
+        }
+    ],
+    "github": {
+        "silent": true
+    }
 }

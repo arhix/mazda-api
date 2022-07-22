@@ -1,1 +1,6 @@
-flask
+flask[async]
+apiflask[yaml]
+python-jose[cryptography]
+pymazda
+requests
+gunicorn
