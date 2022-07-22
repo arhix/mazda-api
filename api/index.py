@@ -31,13 +31,25 @@ vercel_env = os.getenv('VERCEL_ENV', "local")
 vercel_url = os.getenv('VERCEL_URL')
 if vercel_env != "production" and vercel_url is not None:
     app.servers.append({
-        'description': 'Feature Server',
+        'description': 'Feature Server on Vercel',
         'url': 'https://{vercel_url}'.format(vercel_url=vercel_url)
     })
 
 app.servers.append({
-    'description': 'Public Server',
+    'description': 'Public Server on Vercel',
     'url': 'https://mazda-api.vercel.com'
+})
+
+heroku_name = os.getenv('HEROKU_APP_NAME')
+if heroku_name is not None:
+    app.servers.append({
+        'description': 'Feature Server on Heroku(💤)',
+        'url': 'https://{heroku_name}.herokuapp.com'.format(heroku_name=heroku_name)
+    })
+
+app.servers.append({
+    'description': 'Public Server on Heroku(💤)',
+    'url': 'https://mazda-api.herokuapp.com'
 })
 
 
