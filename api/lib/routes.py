@@ -1,5 +1,6 @@
 from aiohttp import ClientResponseError
 from apiflask import abort, APIBlueprint
+from flask import request
 from pymazda.exceptions import *
 
 import pymazda
@@ -13,8 +14,13 @@ bp = APIBlueprint('foo', __name__)
 
 auth = JWTAuth(os.getenv('SECRET_KEY'))
 
-useMock = os.getenv("MOCK_CLIENT", 'False').lower() in ('true', '1', 't')
-mazdaClient = MockClient if useMock else pymazda.Client
+def getMazdaClient(request):
+    debug = request.args.get('debug', 'false').lower() in ('true', '1', 't')
+    useMock = os.getenv("MOCK_CLIENT", 'False').lower() in ('true', '1', 't')
+    if useMock or debug:
+        return MockClient
+
+    return pymazda.Client
 
 @bp.post("/auth")
 @bp.doc(summary='Get auth tocken', tag="auth")
@@ -22,6 +28,7 @@ mazdaClient = MockClient if useMock else pymazda.Client
 async def getAuth(data: MazdaAuth) -> None:
     client = None
     try:
+        mazdaClient = getMazdaClient(request)
         client = mazdaClient(**data)
         await client.validate_credentials()
     except(
@@ -51,6 +58,7 @@ async def getAuth(data: MazdaAuth) -> None:
 @bp.doc(summary='List of vehicles', security='bearerAuth', tag="main")
 @auth.login_required
 async def getVehicles() -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     vehicles = await client.get_vehicles()
     await client.close()
@@ -61,6 +69,7 @@ async def getVehicles() -> None:
 @bp.doc(summary='Vehicle status', security='bearerAuth', tag="main")
 @auth.login_required
 async def getStatus(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     status = await client.get_vehicle_status(vid)
     await client.close()
@@ -72,6 +81,7 @@ async def getStatus(vid: int) -> None:
 @bp.output(DoorsStatus)
 @auth.login_required
 async def checkDoors(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     status = await client.get_vehicle_status(vid)
     await client.close()
@@ -91,6 +101,7 @@ async def checkDoors(vid: int) -> None:
 @bp.doc(summary='Lock doors', security='bearerAuth', tag="doors")
 @auth.login_required
 async def lockDoors(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.lock_doors(vid)
     await client.close()
@@ -100,6 +111,7 @@ async def lockDoors(vid: int) -> None:
 @bp.doc(summary='Unlock doors', security='bearerAuth', tag="doors")
 @auth.login_required
 async def unlockDoors(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.unlock_doors(vid)
     await client.close()
@@ -109,6 +121,7 @@ async def unlockDoors(vid: int) -> None:
 @bp.doc(summary='Hazard lights on', security='bearerAuth', tag="lights")
 @auth.login_required
 async def turn_on_hazard_lights(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.turn_on_hazard_lights(vid)
     await client.close()
@@ -118,6 +131,7 @@ async def turn_on_hazard_lights(vid: int) -> None:
 @bp.doc(summary='Hazard lights off', security='bearerAuth', tag="lights")
 @auth.login_required
 async def turn_off_hazard_lights(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.turn_off_hazard_lights(vid)
     await client.close()
@@ -127,6 +141,7 @@ async def turn_off_hazard_lights(vid: int) -> None:
 @bp.doc(summary='Start engine', security='bearerAuth', tag="engine")
 @auth.login_required
 async def startEngine(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.start_engine(vid)
     await client.close()
@@ -136,6 +151,7 @@ async def startEngine(vid: int) -> None:
 @bp.doc(summary='Stop engine', security='bearerAuth', tag="engine")
 @auth.login_required
 async def stopEngine(vid: int) -> None:
+    mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.stop_engine(vid)
     await client.close()
