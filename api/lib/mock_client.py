@@ -8,12 +8,6 @@ class MockClient:
     async def validate_credentials(self):
         pass
 
-    async def start_engine(self, vid):
-        pass
-
-    async def stop_engine(self, vid):
-        pass
-
     async def get_vehicles(self):
         return [
             {
@@ -74,4 +68,16 @@ class MockClient:
         }
 
     async def close(self):
+        pass
+
+    async def start_engine(self, vid):
+        pass
+
+    async def stop_engine(self, vid):
+        pass
+
+    async def lock_doors(self, vid):
+        pass
+
+    async def unlock_doors(self, vid):
         pass
