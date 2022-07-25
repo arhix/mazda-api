@@ -8,6 +8,12 @@ class MockClient:
     async def validate_credentials(self):
         pass
 
+    async def start_engine(self, vid):
+        pass
+
+    async def stop_engine(self, vid):
+        pass
+
     async def get_vehicles(self):
         return [
             {

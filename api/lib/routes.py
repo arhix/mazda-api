@@ -19,8 +19,17 @@ def getMazdaClient(request):
     useMock = os.getenv("MOCK_CLIENT", 'False').lower() in ('true', '1', 't')
     if useMock or debug:
         return MockClient
-
     return pymazda.Client
+
+@bp.errorhandler(MazdaException)
+@bp.errorhandler(MazdaConfigException)
+@bp.errorhandler(MazdaAPIEncryptionException)
+@bp.errorhandler(MazdaAuthenticationException)
+@bp.errorhandler(MazdaAccountLockedException)
+@bp.errorhandler(MazdaTokenExpiredException)
+@bp.errorhandler(MazdaLoginFailedException)
+def handle_mazda_request(err):
+    abort(400, message=err.status)
 
 @bp.post("/auth")
 @bp.doc(summary='Get auth tocken', tag="auth")
@@ -99,59 +108,71 @@ async def checkDoors(vid: int) -> None:
 
 @bp.get("/doors/lock/<int:vid>")
 @bp.doc(summary='Lock doors', security='bearerAuth', tag="doors")
+@bp.output({}, 204)
 @auth.login_required
 async def lockDoors(vid: int) -> None:
     mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.lock_doors(vid)
     await client.close()
+    return '', 204
 
 
 @bp.get("/doors/unlock/<int:vid>")
 @bp.doc(summary='Unlock doors', security='bearerAuth', tag="doors")
+@bp.output({}, 204)
 @auth.login_required
 async def unlockDoors(vid: int) -> None:
     mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.unlock_doors(vid)
     await client.close()
+    return '', 204
 
 
 @bp.get("/lights/on/<int:vid>")
 @bp.doc(summary='Hazard lights on', security='bearerAuth', tag="lights")
+@bp.output({}, 204)
 @auth.login_required
 async def turn_on_hazard_lights(vid: int) -> None:
     mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.turn_on_hazard_lights(vid)
     await client.close()
+    return '', 204
 
 
 @bp.get("/lights/off/<int:vid>")
 @bp.doc(summary='Hazard lights off', security='bearerAuth', tag="lights")
+@bp.output({}, 204)
 @auth.login_required
 async def turn_off_hazard_lights(vid: int) -> None:
     mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.turn_off_hazard_lights(vid)
     await client.close()
+    return '', 204
 
 
 @bp.get("/engine/start/<int:vid>")
 @bp.doc(summary='Start engine', security='bearerAuth', tag="engine")
+@bp.output({}, 204)
 @auth.login_required
 async def startEngine(vid: int) -> None:
     mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.start_engine(vid)
     await client.close()
+    return '', 204
 
 
 @bp.get("/engine/stop/<int:vid>")
 @bp.doc(summary='Stop engine', security='bearerAuth', tag="engine")
+@bp.output({}, 204)
 @auth.login_required
 async def stopEngine(vid: int) -> None:
     mazdaClient = getMazdaClient(request)
     client = mazdaClient(**auth.current_user)
     await client.stop_engine(vid)
     await client.close()
+    return '', 204
