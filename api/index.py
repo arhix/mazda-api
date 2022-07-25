@@ -1,7 +1,18 @@
 from apiflask import APIFlask
 import os
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 from api.lib.routes import bp
+
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_DSN'),
+    integrations=[
+        FlaskIntegration(),
+    ],
+    traces_sample_rate=1.0,
+    environment = os.getenv('FLASK_ENV') or os.getenv('VERCEL_ENV') or "production",
+)
 
 
 app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements', docs_path="/")
