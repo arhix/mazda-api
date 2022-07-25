@@ -37,7 +37,7 @@ if vercel_env != "production" and vercel_url is not None:
 
 app.servers.append({
     'description': 'Public Server on Vercel',
-    'url': 'https://mazda-api.vercel.com'
+    'url': 'https://mazda-api.vercel.app'
 })
 
 heroku_name = os.getenv('HEROKU_APP_NAME')
