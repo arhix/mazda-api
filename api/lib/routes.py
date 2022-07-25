@@ -10,7 +10,7 @@ from api.lib.mock_client import MockClient
 from api.lib.schemas import MazdaAuth, DoorsStatus
 from api.lib.auth import JWTAuth
 
-bp = APIBlueprint('foo', __name__)
+bp = APIBlueprint('api', __name__)
 
 auth = JWTAuth(os.getenv('SECRET_KEY'))
 
