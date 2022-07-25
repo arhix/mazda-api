@@ -29,7 +29,7 @@ def getMazdaClient(request):
 @bp.errorhandler(MazdaTokenExpiredException)
 @bp.errorhandler(MazdaLoginFailedException)
 def handle_mazda_request(err):
-    abort(400, message=err.status)
+    return {'message': err.status}, 400
 
 @bp.post("/auth")
 @bp.doc(summary='Get auth tocken', tag="auth")
