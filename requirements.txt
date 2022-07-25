@@ -4,3 +4,4 @@ python-jose[cryptography]
 pymazda
 requests
 gunicorn
+sentry-sdk[flask]
