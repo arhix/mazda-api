@@ -51,17 +51,4 @@ app.servers.append({
     'url': 'https://mazda-api.vercel.app'
 })
 
-heroku_name = os.getenv('HEROKU_APP_NAME')
-if heroku_name is not None:
-    app.servers.append({
-        'description': 'Feature Server on Heroku(💤)',
-        'url': 'https://{heroku_name}.herokuapp.com'.format(heroku_name=heroku_name)
-    })
-
-app.servers.append({
-    'description': 'Public Server on Heroku(💤)',
-    'url': 'https://mazda-api.herokuapp.com'
-})
-
-
 app.register_blueprint(bp)
