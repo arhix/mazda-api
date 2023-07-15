@@ -11,9 +11,8 @@ sentry_sdk.init(
         FlaskIntegration(),
     ],
     traces_sample_rate=1.0,
-    environment = os.getenv('FLASK_ENV') or os.getenv('VERCEL_ENV') or "production",
+    environment=os.getenv('FLASK_ENV') or os.getenv('VERCEL_ENV') or "production",
 )
-
 
 app = APIFlask(__name__, title="MyMazda Api", version="0.2.0", docs_ui='elements', docs_path="/")
 app.config.update(
